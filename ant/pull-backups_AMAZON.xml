@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Pull backups from wmfra.de on AMAZON" default="download" basedir="..">
+	<description>
+		Pull backups from wmfra.de on AMAZON
+	</description>
+
+	<target name="init" >
+		<echo>Creating the deploy directorys</echo>
+		<mkdir dir="../_backup/www.wmfra.de/"/>
+	</target>
+
+
+	<target name="download" depends="init">
+		
+		<echo>Downloading backup files </echo>
+		<exec executable="rsync" dir="." failonerror="true">
+			<arg value="-avze"/>
+			<arg value="ssh -i /Users/jens/.ssh/sponsoredservers.pem"/>
+			<arg value="ec2-user@46.137.157.95:/var/www/html/wmfra/backup"/>
+			<arg value="../_backup/www.wmfra.de/"/>
+			<arg value="--exclude-from=ant/rsync.excludes"/>
+		</exec>
+		
+	</target>
+</project>

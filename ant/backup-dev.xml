@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Backup wmfra.de Testing Online (DEV)" default="backup" basedir="..">
+	<property file="ant/build.properties"/>
+	<property name="disttype" value="dev"/>
+
+	<description>
+		Backup "wmfra.de" Testing Online (DEV)
+	</description>
+
+	<target name="backup">
+
+		<property name="backuppath" value="../Backup/${project.name}/latest"/>
+		<mkdir dir="${backuppath}"/>
+
+
+		<echo message="Getting latest remote files"/>
+
+
+		<ftp action="get" 
+			remotedir="${ftp.path}/${disttype}/"
+			server="${ftp.host}" 
+			userid="${ftp.user}" 
+			password="${ftp.pw}">
+			<fileset dir="hello">
+				<include name="**/**" />
+		    </fileset>
+		</ftp>
+		<echo message="Backup done!"/>
+
+	</target>
+
+</project>

@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Deploy Production Version for wmfra.de on AMAZON (LIVE)" default="update" basedir="..">
+	<property file="ant/build.properties"/>
+	<property file="ant/prod.properties"/>
+	<property file="ant/build.number"/>
+	<property name="domain">http://www.wmfra.de</property>
+	<description>
+		Deploy Production Version for wmfra.de on AMAZON (LIVE)
+	</description>
+
+	<target name="init" >
+		<echo>Creating the deploy directorys</echo>
+		<mkdir dir="${buildpath}/js"/>
+		<mkdir dir="${buildpath}/wp-content/themes"/>
+		<mkdir dir="${buildpath}/wp-content/plugins"/>
+		<mkdir dir="${buildpath}/wp-content/languages"/>
+		<!-- mkdir dir="${buildpath}/wp-content/uploads/widgets"/ -->
+	</target>
+
+	<target name="backup" depends="init">
+
+		<!-- download backup files first -->
+		<echo>Creating the deploy directorys</echo>
+		<mkdir dir="../_backup/www.wmfra.de/"/>
+
+		<echo>Downloading backup files </echo>
+		<exec executable="rsync" dir="." failonerror="true">
+			<arg value="-avze"/>
+			<arg value="ssh -i /Users/jens/.ssh/sponsoredservers.pem"/>
+			<arg value="ec2-user@46.137.157.95:/var/www/html/wmfra/backup"/>
+			<arg value="../_backup/www.wmfra.de/"/>
+			<arg value="--exclude-from=ant/rsync.excludes"/>
+		</exec>
+
+	</target>
+
+
+	<target name="copy" depends="backup">
+		<echo>Copying files and resources</echo>
+		<echo>Deploying revision ${version}.${build.number}</echo>
+
+		<!-- static files -->
+
+		<!-- SEO files -->
+		<!--copy file="static/google2b69cf4899b1efb5.html" tofile="${buildpath}/google2b69cf4899b1efb5.html" preservelastmodified="true"/-->
+		<!--copy file="static/BingSiteAuth.xml" tofile="${buildpath}/BingSiteAuth.xml" preservelastmodified="true"/-->
+		<!--copy file="static/mobile.css" tofile="${buildpath}/splash/mobile.css" preservelastmodified="true"/-->
+		<!--copy file="static/teaser.css" tofile="${buildpath}/splash/teaser.css" preservelastmodified="true"/-->
+		<!--copy todir="${buildpath}/splash/images" preservelastmodified="true">
+			<fileset dir="static/images" />
+		</copy-->
+		<!-- copy file="static/htaccess" tofile="${buildpath}/.htaccess" preservelastmodified="true"/-->
+
+
+
+		<!-- Payload -->
+		<copy todir="${buildpath}/" preservelastmodified="true">
+			<fileset dir="${wprespath}/wp/${wp.version}" />
+		</copy>
+
+		<copy todir="${buildpath}/wp-content/plugins/antispam-bee" preservelastmodified="true">
+			<fileset dir="${wprespath}/wp-content/plugins/antispam-bee" />
+		</copy>
+
+		<copy todir="${buildpath}/wp-content/plugins/redirection" preservelastmodified="true">
+			<fileset dir="${wprespath}/wp-content/plugins/redirection" />
+		</copy>
+
+		<copy todir="${buildpath}/wp-content/plugins/wp-robots-txt" preservelastmodified="true">
+			<fileset dir="${wprespath}/wp-content/plugins/wp-robots-txt" />
+		</copy>
+
+		<copy todir="${buildpath}/wp-content/plugins/maintenance-mode" preservelastmodified="true">
+			<fileset dir="custom/wp-content/plugins/maintenance-mode" />
+		</copy>
+
+		<copy todir="${buildpath}/wp-content/plugins/wp-super-cache" preservelastmodified="true">
+			<fileset dir="${wprespath}/wp-content/plugins/wp-super-cache" />
+		</copy>
+
+		<copy todir="${buildpath}/wp-content/plugins/google-sitemap-generator" preservelastmodified="true">
+			<fileset dir="${wprespath}/wp-content/plugins/google-sitemap-generator" />
+		</copy>
+
+		<copy todir="${buildpath}/wp-content/plugins/si-contact-form-XXXX" preservelastmodified="true">
+			<fileset dir="${wprespath}/wp-content/plugins/si-contact-form-XXXX" />
+		</copy>
+
+		<copy todir="${buildpath}/wp-content/plugins/html-on-pages" preservelastmodified="true">
+			<fileset dir="${wprespath}/wp-content/plugins/html-on-pages" />
+		</copy>
+
+		<copy todir="${buildpath}/wp-content/plugins/wp-facebook-open-graph-protocol" preservelastmodified="true">
+			<fileset dir="${wprespath}/wp-content/plugins/wp-facebook-open-graph-protocol" />
+		</copy>
+
+		<copy todir="${buildpath}/wp-content/plugins/wp-to-twitter" preservelastmodified="true">
+			<fileset dir="${wprespath}/wp-content/plugins/wp-to-twitter" />
+		</copy>
+
+		<copy todir="${buildpath}/wp-content/plugins/jm-twitter-cards" preservelastmodified="true">
+			<fileset dir="${wprespath}/wp-content/plugins/jm-twitter-cards" />
+		</copy>
+
+		<copy todir="${buildpath}/wp-content/plugins/limit-login-attempts" preservelastmodified="true">
+			<fileset dir="${wprespath}/wp-content/plugins/limit-login-attempts" />
+		</copy>
+
+		<copy todir="${buildpath}/s" preservelastmodified="true">
+			<fileset dir="src/yourls" />
+		</copy>
+
+		<!--copy todir="${buildpath}/s/user/" preservelastmodified="true">
+			<fileset dir="custom/yourls/online/" />
+		</copy-->
+
+		<copy todir="${buildpath}/wp-content/themes/" preservelastmodified="true">
+			<fileset dir="${wprespath}/wp-content/themes/" />
+		</copy>
+
+		<copy todir="${buildpath}/wp-content/languages/" preservelastmodified="true">
+			<fileset dir="src/wp-content/languages/" />
+		</copy>
+
+		<copy todir="${buildpath}/wp-content/themes/wmfra/sh/" preservelastmodified="true">
+			<fileset dir="src/alexgorbatchev/">
+				<exclude name="src/alexgorbatchev/index.html, LGPL-LICENSE, MIT-LICENSE, src/alexgorbatchev/compass, src/alexgorbatchev/src, src/alexgorbatchev/tests, " />
+			</fileset>
+		</copy>
+
+
+		<!-- custom plugins and themes -->
+
+		<copy file="custom/wp/humans.txt" toFile="${buildpath}/humans.txt" outputencoding="utf-8" preservelastmodified="false" verbose="true"/>
+
+		<!--copy todir="${buildpath}/wp-content/plugins/appcache-manifest" preservelastmodified="true">
+			<fileset dir="custom/wp-content/plugins/appcache-manifest" />
+		</copy-->
+
+		<copy todir="${buildpath}/wp-content/plugins/wmfra-kit" preservelastmodified="true">
+			<fileset dir="custom/wp-content/plugins/wmfra-kit" />
+		</copy>
+
+		<copy todir="${buildpath}/wp-content/themes/wmfra" preservelastmodified="true">
+			<fileset dir="custom/wp-content/themes/wmfra" />
+		</copy>
+
+		<!-- C't socialshareprivacy -->
+		<copy todir="${buildpath}/wp-content/themes/wmfra/privacy" preservelastmodified="true">
+			<fileset dir="src/heise/ct/socialshareprivacy" />
+		</copy>
+
+		<!-- C't socialshareprivacy, concat jquery.socialshareprivacy.min.js and options-->
+		<!-- @TODO: Leerzeichen und Umbrüche entfernen in der JS-Datei -->
+		<concat destfile="${buildpath}/wp-content/themes/wmfra/privacy/privacy.wmfra.js" force="no">
+			<filelist dir="${buildpath}/wp-content/themes/wmfra/privacy" files="jquery.socialshareprivacy.min.js" />
+			<filelist dir="${buildpath}/wp-content/themes/wmfra/js" files="jquery.socialshareprivacy.options.js" />
+		</concat>
+
+		<!-- 
+		 *
+		 * Webmontag Frankfurt Banner Backend
+		 * 
+		 * START
+		 -->
+
+		<!-- JavaScript file and .htaccess file -->
+		<copy file="custom/wp/js/widgets.js" todir="${buildpath}/js/" preservelastmodified="true" verbose="true">
+			<filterchain>
+				<tokenfilter>
+					<deletecharacters chars="\t" />
+					<trim />
+					<ignoreblank />
+				</tokenfilter>
+				<filterreader classname="org.apache.tools.ant.filters.StripLineComments">
+					<param type="comment" value="//" />
+					<param type="comment" value="/*" />
+				</filterreader>
+				<filterreader classname="org.apache.tools.ant.filters.ReplaceTokens">
+					<param type="token" name="DOMAIN" value="${domain}" />
+				</filterreader>
+				<filterreader classname="org.apache.tools.ant.filters.StripLineBreaks" />
+			</filterchain>
+		</copy>
+
+		<copy file="custom/wp/js/htaccess" toFile="${buildpath}/js/.htaccess" preservelastmodified="true" verbose="true" />
+
+		<!-- PHP JSON Endpoint -->
+		<copy file="custom/wp/data.php" toFile="${buildpath}/data.php" preservelastmodified="true" verbose="true" />
+
+		<!-- Banner and logo payload -->
+		<!--copy todir="${buildpath}/wp-content/uploads/widgets" preservelastmodified="true">
+			<fileset dir="custom/wp-content/uploads/widgets">
+				<exclude name="htaccess" />
+			</fileset>
+		</copy>
+		<copy file="custom/wp-content/uploads/widgets/htaccess" toFile="${buildpath}/wp-content/uploads/widgets/.htaccess" preservelastmodified="true" verbose="true" /-->
+
+		<!-- END -->
+
+
+		<!-- Copy version files -->
+		<copy file="custom/wp-content/themes/wmfra/style.css" todir="${buildpath}/wp-content/themes/wmfra" preservelastmodified="false" overwrite="true" verbose="true">
+			<filterchain>
+				<filterreader classname="org.apache.tools.ant.filters.ReplaceTokens">
+					<param type="token" name="REVISION" value="${version}.${build.number}" />
+				</filterreader>
+			</filterchain>
+		</copy>
+		<copy file="custom/wp-content/themes/wmfra/header.php" todir="${buildpath}/wp-content/themes/wmfra" preservelastmodified="false" overwrite="true" verbose="true">
+			<filterchain>
+				<filterreader classname="org.apache.tools.ant.filters.ReplaceTokens">
+					<param type="token" name="REVISION" value="${version}.${build.number}" />
+				</filterreader>
+			</filterchain>
+		</copy>
+		<copy file="custom/wp-content/themes/wmfra/footer.php" todir="${buildpath}/wp-content/themes/wmfra" preservelastmodified="false" overwrite="true" verbose="true">
+			<filterchain>
+				<filterreader classname="org.apache.tools.ant.filters.ReplaceTokens">
+					<param type="token" name="REVISION" value="${version}.${build.number}" />
+				</filterreader>
+			</filterchain>
+		</copy>
+		<copy file="custom/wp-content/themes/wmfra/functions.php" todir="${buildpath}/wp-content/themes/wmfra" preservelastmodified="false" overwrite="true" verbose="true">
+			<filterchain>
+				<filterreader classname="org.apache.tools.ant.filters.ReplaceTokens">
+					<param type="token" name="REVISION" value="${version}.${build.number}" />
+				</filterreader>
+			</filterchain>
+		</copy>
+
+		<copy todir="${buildpath}/wp-content/languages/themes" preservelastmodified="true">
+			<fileset dir="custom/wp-content/languages/themes" />
+		</copy>
+
+		<copy todir="${buildpath}/" preservelastmodified="true">
+			<fileset dir="custom/wp/online-prod/" />
+		</copy>
+
+
+	</target>
+
+	<target name="chmod" depends="copy">
+
+		<!-- set permissions -->
+		<!-- all files -->
+		<chmod dir="${buildpath}" perm="754" includes="**/*.php"/>
+
+	</target>
+
+	<target name="update" depends="chmod">
+		<exec executable="rsync" dir="." failonerror="true">
+			<arg value="-avze" />
+			<arg value="ssh -i /Users/jens/.ssh/sponsoredservers.pem" />
+			<arg value="/Users/jens/Documents/workspace/www.wmfra.de/dist/prod/" />
+			<arg value="ec2-user@46.137.157.95:/var/www/html/wmfra/prod4" />
+			<arg value="--exclude-from=ant/rsync.excludes" />
+		</exec>
+	</target>
+
+</project>

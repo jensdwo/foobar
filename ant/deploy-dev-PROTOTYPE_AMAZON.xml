@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Deploy Prototypes wmfra.de on AMAZON for Testing (DEV)" default="update" basedir="..">
+	<property file="ant/build.properties"/>
+	<property file="ant/testpath.properties"/>
+	<property name="domain">http://beta.wmfra.de</property>
+	<description>
+		Deploy Prototypes "wmfra.de" on AMAZON for Testing (DEV)
+	</description>
+
+	<target name="init" >
+		<echo>Creating the deploy directorys</echo>
+		<mkdir dir="${buildpath}/js"/>
+		<mkdir dir="${buildpath}/wp-content/themes"/>
+		<mkdir dir="${buildpath}/wp-content/plugins"/>
+		<mkdir dir="${buildpath}/wp-content/languages"/>
+		<!--mkdir dir="${buildpath}/wp-content/uploads/widgets"/-->
+	</target>
+
+	<target name="backup" depends="init">
+
+		<!-- download backup files first -->
+		<echo>Creating the deploy directorys</echo>
+		<mkdir dir="../_backup/www.wmfra.de/"/>
+
+		<echo>Downloading backup files </echo>
+		<exec executable="rsync" dir="." failonerror="true">
+			<arg value="-avze"/>
+			<arg value="ssh -i /Users/jens/.ssh/sponsoredservers.pem"/>
+			<arg value="ec2-user@46.137.157.95:/var/www/html/wmfra/backup"/>
+			<arg value="../_backup/www.wmfra.de/"/>
+			<arg value="--exclude-from=ant/rsync.excludes"/>
+		</exec>
+
+	</target>
+
+	<target name="copy" depends="backup">
+		<echo>Copying files and resources</echo>
+
+		<!-- Copy Prototypes -->
+		<copy todir="${buildpath}/prototype" preservelastmodified="true">
+			<fileset dir="custom/wp/prototype" />
+		</copy>
+
+	
+	</target>
+
+	<target name="chmod" depends="copy">
+
+		<!-- set permissions -->
+		<!-- all files -->
+		<chmod dir="${buildpath}" perm="754" includes="**/*.php"/>
+
+	</target>
+
+	<target name="update" depends="chmod">
+		<exec executable="rsync" dir="." failonerror="true">
+			<arg value="-avze" />
+			<arg value="ssh -i /Users/jens/.ssh/sponsoredservers.pem" />
+			<arg value="/Users/jens/Documents/workspace/www.wmfra.de/dist/dev/prototype/" />
+			<arg value="ec2-user@46.137.157.95:/var/www/html/wmfra/beta0/prototype" />
+			<arg value="--exclude-from=ant/rsync.excludes" />
+		</exec>
+	</target>
+
+</project>
