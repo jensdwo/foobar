@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net" agent="Mozilla/5.0 (iPhone; CPU iPhone OS 18_1_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) FxiOS/133.1  Mobile/15E148 Safari/605.1.15" version="25.0.3">
   <diagram name="Page-1" id="38b20595-45e3-9b7f-d5ca-b57f44c5b66d">
-    <mxGraphModel dx="1408" dy="748" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" background="none" math="0" shadow="0">
+    <mxGraphModel dx="342" dy="521" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" background="none" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -494,7 +494,7 @@
           <mxGeometry x="603" y="483" width="212" height="10" as="geometry" />
         </mxCell>
         <mxCell id="48ef80bc37b76060-265" value="" style="group;rotation=90;" parent="1" vertex="1" connectable="0">
-          <mxGeometry x="626" y="264" width="160" height="140" as="geometry" />
+          <mxGeometry x="603" y="40" width="160" height="140" as="geometry" />
         </mxCell>
         <mxCell id="48ef80bc37b76060-100" value="" style="verticalLabelPosition=bottom;html=1;verticalAlign=top;align=center;strokeWidth=1;shape=mxgraph.floorplan.office_chair;shadow=0;rounded=0;comic=0;fontFamily=Verdana;fontSize=12;rotation=90;" parent="48ef80bc37b76060-265" vertex="1">
           <mxGeometry x="109" y="19" width="40" height="43" as="geometry" />
